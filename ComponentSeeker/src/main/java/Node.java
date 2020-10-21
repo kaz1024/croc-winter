@@ -34,12 +34,17 @@ public class Node {
     }
 
     /**
-     * Соединение вершин.
+     * Добавление связанных вершин в список связанных вершин.
      *
      * @param nodes связанные вершины.
      */
     public void connect(Node... nodes) {
-        this.links.addAll(Arrays.asList(nodes));
+        for(Node node:nodes){
+            //что бы в список вершин не добавлялась эта же самая вершина
+            if(node != this){
+                links.add(node);
+            }
+        }
     }
 
     public Set<Node> getLinks() {
@@ -50,4 +55,5 @@ public class Node {
     public String toString() {
         return name;
     }
+
 }
