@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<publicTransportInRadius>
+    <vehicle>
+        <vehicleInformation>
+            <id>1</id>
+            <transportType>Bus</transportType>
+            <stateNumber>А324АА123</stateNumber>
+            <routeNumber>65</routeNumber>
+        </vehicleInformation>
+        <markDateTime>2020-09-10T15:30</markDateTime>
+        <OXCoordinate>1400</OXCoordinate>
+        <OYCoordinate>1400</OYCoordinate>
+    </vehicle>
+    <vehicle>
+        <vehicleInformation>
+            <id>3</id>
+            <transportType>Tram</transportType>
+            <stateNumber>С342СС123</stateNumber>
+            <routeNumber>8</routeNumber>
+        </vehicleInformation>
+        <markDateTime>2020-09-10T15:30</markDateTime>
+        <OXCoordinate>58</OXCoordinate>
+        <OYCoordinate>1632</OYCoordinate>
+    </vehicle>
+</publicTransportInRadius>
