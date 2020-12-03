@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<vehicles>
+    <vehicle>
+        <type>Автобус</type>
+        <ID>1</ID>
+        <stateNumber>А324АА123</stateNumber>
+        <routingNumber>65</routingNumber>
+        <date>10.09.2020</date>
+        <time>15.30</time>
+        <coords>-233; -585</coords>
+    </vehicle>
+    <vehicle>
+        <type>Автобус</type>
+        <ID>1</ID>
+        <stateNumber>А324АА123</stateNumber>
+        <routingNumber>65</routingNumber>
+        <date>10.09.2020</date>
+        <time>15.40</time>
+        <coords>-253; -605</coords>
+    </vehicle>
+    <vehicle>
+        <type>Троллейбус</type>
+        <ID>2</ID>
+        <stateNumber>Б523ББ123</stateNumber>
+        <routingNumber>133а</routingNumber>
+        <date>15.09.2020</date>
+        <time>18.20</time>
+        <coords>-1080; -1920</coords>
+    </vehicle>
+    <vehicle>
+        <type>Трамвай</type>
+        <ID>3</ID>
+        <stateNumber>С342СС123</stateNumber>
+        <routingNumber>8</routingNumber>
+        <date>11.10.2020</date>
+        <time>07.00</time>
+        <coords>286; 980</coords>
+    </vehicle>
+</vehicles>
