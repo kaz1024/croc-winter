@@ -1,6 +1,6 @@
-package model;
+package ru.kaz.transport.report.system.model;
 
-import jaxb.LocalDateTimeAdapter;
+import ru.kaz.transport.report.system.jaxb.LocalDateTimeAdapter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -15,6 +15,11 @@ import java.util.Objects;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 public class LocationMark {
+
+    /**
+     * Название таблицы базы данных, содержащей отметки.
+     */
+    private static final String TABLE_NAME = "locations";
 
     /**
      * Транспорт, прошедший отметку.
@@ -46,11 +51,6 @@ public class LocationMark {
      */
     @XmlElement(name = "OYCoordinate")
     private final Integer oy;
-
-    /**
-     * Название таблицы базы данных, содержащей отметки.
-     */
-    private static final String TABLE_NAME = "locations";
 
     /**
      * Транспорт, прошедший отметку.

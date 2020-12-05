@@ -1,4 +1,4 @@
-package model;
+package ru.kaz.transport.report.system.model;
 
 /**
  * Тип общественного транспорта.

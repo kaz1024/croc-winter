@@ -1,22 +1,23 @@
-package reports;
+package ru.kaz.transport.report.system.reports;
 
-import db.DataSourceProvider;
-import model.LocationMark;
-import model.PublicTransport;
-import model.PublicTransportTypes;
+import ru.kaz.transport.report.system.db.DataSourceProvider;
+import ru.kaz.transport.report.system.model.LocationMark;
+import ru.kaz.transport.report.system.model.PublicTransport;
+import ru.kaz.transport.report.system.model.PublicTransportTypes;
 import org.junit.jupiter.api.*;
-import repository.LocationRepository;
-import repository.TransportRepository;
+import ru.kaz.transport.report.system.repository.LocationRepository;
+import ru.kaz.transport.report.system.repository.TransportRepository;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 
 @DisplayName("Проверка класса формирования XML отчетов.")
-public class XMLReportsServiceTest {
+public class TransportInRadiusReportTest {
 
     /**
      * Репозиторий для доступа к таблице с данными о транспорте (PublicTransport).
@@ -31,7 +32,7 @@ public class XMLReportsServiceTest {
     /**
      * Класс для создания отчетов.
      */
-    private XMLReportsService XMLReportsService;
+    private TransportInRadiusReport XMLReportsService;
 
     /**
      * Путь до образца XML.
@@ -39,12 +40,12 @@ public class XMLReportsServiceTest {
     private final Path sampleReportPath = Paths.get("src/main/resources/SampleTransportList.xml");
 
     /**
-     * Путь до сгенерированного XML отчета.
+     * Путь до выходного сгенерированного отчета.
      */
-    private final Path generatedReportPath = Paths.get("src/main/resources/PublicTransportList.xml");
+    private final String outputFilePath = "src/main/resources/PublicTransportList.xml";
 
     /**
-     * Сгенерированный отчет
+     * Сгенерированный отчет.
      */
     private File outputFile;
 
@@ -60,7 +61,7 @@ public class XMLReportsServiceTest {
 
     @BeforeAll
     @DisplayName("Инициализация репозиториев и таблиц.")
-    public static void tablesInitialization() throws IOException {
+    public static void tablesInitialization() throws IOException, SQLException {
 
         // получение DataSource
         DataSourceProvider dataSourceProvider;
@@ -80,7 +81,7 @@ public class XMLReportsServiceTest {
 
     @BeforeEach
     @DisplayName("Инициализация тестовых объектов и очистка таблиц.")
-    public void objectsInitialization() throws IOException {
+    public void objectsInitialization() throws IOException, SQLException {
 
         // инициализация тестовых объектов
         bus = new PublicTransport(1,
@@ -127,22 +128,22 @@ public class XMLReportsServiceTest {
         locationRepository.createNew(locationMark4);
 
         // инициализация класса создания отчетов
-        XMLReportsService = new XMLReportsService();
+        XMLReportsService = new TransportInRadiusReport();
 
-        // инициализируем выходного файл
-        outputFile = new File(generatedReportPath.toString());
+        // инициализация выходного файла
+        outputFile = new File(outputFilePath);
     }
 
     @Test
     @DisplayName("Проверка создания отчета об общественном транспорте в радиусе 2000м в заданный момент времени.")
-    public void testReportCreation() throws IOException {
+    public void testReportCreation() throws IOException, SQLException {
 
         // проверяем что отчет сформировался
-        Assertions.assertTrue(XMLReportsService.createTransportInRadiusReport(0, 0,
-                LocalDateTime.of(2020, 9, 10, 15, 30)));
+        Assertions.assertTrue(XMLReportsService.createReport(0, 0,
+                LocalDateTime.of(2020, 9, 10, 15, 30), outputFilePath));
 
         // получаем сгенерированный XML
-        String generatedXML = new String(Files.readAllBytes(generatedReportPath));
+        String generatedXML = new String(Files.readAllBytes(Paths.get(outputFilePath)));
 
         // получаем образец XML
         String sampleXML = new String(Files.readAllBytes(sampleReportPath));

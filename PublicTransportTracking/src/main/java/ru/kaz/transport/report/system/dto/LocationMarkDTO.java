@@ -1,6 +1,6 @@
-package dto;
+package ru.kaz.transport.report.system.dto;
 
-import model.LocationMark;
+import ru.kaz.transport.report.system.model.LocationMark;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;

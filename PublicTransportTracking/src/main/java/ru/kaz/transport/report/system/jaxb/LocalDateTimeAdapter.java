@@ -1,4 +1,4 @@
-package jaxb;
+package ru.kaz.transport.report.system.jaxb;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import java.time.LocalDateTime;

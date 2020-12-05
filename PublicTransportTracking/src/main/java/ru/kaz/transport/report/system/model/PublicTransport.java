@@ -1,4 +1,4 @@
-package model;
+package ru.kaz.transport.report.system.model;
 
 import javax.xml.bind.annotation.XmlElement;
 import java.util.Objects;
@@ -7,6 +7,11 @@ import java.util.Objects;
  * Общественный транспорт.
  */
 public class PublicTransport {
+
+    /**
+     * Название таблицы базы данных, содержащей транспорт.
+     */
+    private static final String TABLE_NAME = "transports";
 
     /**
      * ID автомобиля
@@ -31,11 +36,6 @@ public class PublicTransport {
      */
     @XmlElement
     private String routeNumber;
-
-    /**
-     * Название таблицы базы данных, содержащей транспорт.
-     */
-    private static final String TABLE_NAME = "transports";
 
     /**
      * Общественный транспорт.

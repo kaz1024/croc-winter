@@ -1,4 +1,4 @@
-package dto;
+package ru.kaz.transport.report.system.dto;
 
 /**
  * Интерфейс, обобщающий data transfer классы,

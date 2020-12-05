@@ -1,6 +1,6 @@
-package jaxb;
+package ru.kaz.transport.report.system.jaxb;
 
-import dto.DTOCollection;
+import ru.kaz.transport.report.system.dto.DTOCollection;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;

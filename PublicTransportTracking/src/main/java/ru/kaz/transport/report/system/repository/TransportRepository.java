@@ -1,7 +1,7 @@
-package repository;
+package ru.kaz.transport.report.system.repository;
 
-import model.PublicTransport;
-import model.PublicTransportTypes;
+import ru.kaz.transport.report.system.model.PublicTransport;
+import ru.kaz.transport.report.system.model.PublicTransportTypes;
 import org.apache.derby.jdbc.EmbeddedDataSource;
 
 import java.sql.*;
@@ -27,7 +27,7 @@ public class TransportRepository {
     /**
      * Репозиторий для доступа к таблице с данными об отметках местоположения (LocationMark).
      */
-    public TransportRepository(EmbeddedDataSource dataSource) {
+    public TransportRepository(EmbeddedDataSource dataSource) throws SQLException {
         this.dataSource = dataSource;
         this.TABLE_NAME = PublicTransport.getTableName();
         initTable();
@@ -41,7 +41,7 @@ public class TransportRepository {
      *
      * @author VKhlybov
      */
-    private void initTable() {
+    private void initTable() throws SQLException {
         System.out.printf("Start initializing %s table...%n", TABLE_NAME);
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement()) {
@@ -69,6 +69,7 @@ public class TransportRepository {
             }
         } catch (SQLException e) {
             System.out.println("Error occurred during table initializing: " + e.getMessage());
+            throw e;
         } finally {
             System.out.println("======================================");
         }
@@ -79,12 +80,13 @@ public class TransportRepository {
      *
      * @param publicTransport транспорт
      */
-    public void createNew(PublicTransport publicTransport) {
+    public void createNew(PublicTransport publicTransport) throws SQLException {
 
         String sqlQuery = "INSERT INTO " + TABLE_NAME + " VALUES (?, ?, ?, ?)";
 
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sqlQuery)) {
+
             statement.setString(1, publicTransport.getId().toString());
             statement.setString(2, publicTransport.getType().toString());
             statement.setString(3, publicTransport.getStateNumber());
@@ -94,6 +96,7 @@ public class TransportRepository {
             System.out.println("Запись о транспорте с ID " + publicTransport.getId() + " уже существует!");
         } catch (Exception e) {
             System.out.println("Ошибка выполнения запроса createNew transport: " + e.getMessage());
+            throw e;
         }
     }
 
@@ -102,9 +105,11 @@ public class TransportRepository {
      *
      * @return список всего транспорта
      */
-    public List<PublicTransport> findAll() {
+    public List<PublicTransport> findAll() throws SQLException {
+
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement()) {
+
             ResultSet resultSet = statement.executeQuery("SELECT * FROM " + TABLE_NAME);
             List<PublicTransport> publicTransports = new ArrayList<>();
             while (resultSet.next()) {
@@ -118,8 +123,8 @@ public class TransportRepository {
 
         } catch (Exception e) {
             System.out.println("Ошибка выполнения запроса findAll transport: " + e.getMessage());
+            throw e;
         }
-        return new ArrayList<>();
     }
 
     /**
@@ -127,12 +132,13 @@ public class TransportRepository {
      *
      * @return optional, объект общественного танспорта или Optional.empty()
      */
-    public Optional<PublicTransport> findTransportByID(Integer id) {
+    public Optional<PublicTransport> findTransportByID(Integer id) throws SQLException {
 
         String sqlQuery = "SELECT * FROM " + TABLE_NAME + " WHERE id=?";
 
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sqlQuery)) {
+
             statement.setString(1, id.toString());
             statement.execute();
             ResultSet resultSet = statement.getResultSet();
@@ -146,6 +152,7 @@ public class TransportRepository {
             }
         } catch (Exception e) {
             System.out.println("Ошибка выполнения запроса findTransport: " + e.getMessage());
+            throw e;
         }
         return Optional.empty();
     }
@@ -153,15 +160,18 @@ public class TransportRepository {
     /**
      * Метод удаления всех записей из таблицы.
      */
-    public void deleteAll() {
+    public void deleteAll() throws SQLException {
+
         String sqlQuery = "DELETE FROM " + TABLE_NAME;
 
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sqlQuery)) {
+
             statement.execute();
 
         } catch (Exception e) {
             System.out.println("Ошибка выполнения запроса deleteAll transport: " + e.getMessage());
+            throw e;
         }
     }
 }

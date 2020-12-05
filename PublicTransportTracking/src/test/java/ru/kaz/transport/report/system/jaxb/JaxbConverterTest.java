@@ -1,9 +1,9 @@
-package jaxb;
+package ru.kaz.transport.report.system.jaxb;
 
-import model.LocationMark;
-import dto.LocationMarkDTO;
-import model.PublicTransport;
-import model.PublicTransportTypes;
+import ru.kaz.transport.report.system.model.LocationMark;
+import ru.kaz.transport.report.system.dto.LocationMarkDTO;
+import ru.kaz.transport.report.system.model.PublicTransport;
+import ru.kaz.transport.report.system.model.PublicTransportTypes;
 import org.junit.jupiter.api.*;
 
 import javax.xml.bind.JAXBException;
@@ -77,12 +77,6 @@ public class JaxbConverterTest {
     @Test
     @DisplayName("Проверка конвертации списка транспорта в XML файл.")
     public void jaxbTest() throws IOException, JAXBException {
-
-        // если остался предыдущий сгенерированный отчет
-        if(outputFile.exists()){
-            // удаляем
-            outputFile.delete();
-        }
 
         // формируем тестовые объекты
         locationMark2.insertPublicTransport(bus);

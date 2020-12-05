@@ -1,11 +1,12 @@
-package repository;
+package ru.kaz.transport.report.system.repository;
 
-import db.DataSourceProvider;
-import model.PublicTransport;
-import model.PublicTransportTypes;
+import ru.kaz.transport.report.system.db.DataSourceProvider;
+import ru.kaz.transport.report.system.model.PublicTransport;
+import ru.kaz.transport.report.system.model.PublicTransportTypes;
 import org.junit.jupiter.api.*;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class TransportRepositoryTest {
 
     @BeforeAll
     @DisplayName("Инициализация репозиториев и таблиц.")
-    public static void tablesInitialization() throws IOException {
+    public static void tablesInitialization() throws IOException, SQLException {
 
         // получение DataSource
         DataSourceProvider dataSourceProvider;
@@ -48,7 +49,7 @@ public class TransportRepositoryTest {
 
     @BeforeEach
     @DisplayName("Инициализация тестовых объектов и очистка таблиц.")
-    public void objectsInitialization() {
+    public void objectsInitialization() throws SQLException {
 
         // инициализация тестовых объектов
         bus = new PublicTransport(1,
@@ -73,7 +74,7 @@ public class TransportRepositoryTest {
 
     @Test
     @DisplayName("Проверка метода добавления записи в таблицу.")
-    public void testCreateNew() {
+    public void testCreateNew() throws SQLException {
 
         // добавляем запись в таблицу
         transportRepository.createNew(bus);
@@ -87,7 +88,7 @@ public class TransportRepositoryTest {
 
     @Test
     @DisplayName("Проверка метода послучения всех записей из таблицы.")
-    public void testFindAll() {
+    public void testFindAll() throws SQLException {
 
         // создаем тестовый список
         List<PublicTransport> testList = new ArrayList<>();
@@ -108,7 +109,7 @@ public class TransportRepositoryTest {
 
     @Test
     @DisplayName("Проверка метода поиска записи по ID траспорта.")
-    public void testFindTransportByID() {
+    public void testFindTransportByID() throws SQLException {
 
         // добавляем записи в таблицу
         transportRepository.createNew(bus);
@@ -116,7 +117,7 @@ public class TransportRepositoryTest {
 
         // получаем запись из таблицы по ID
         PublicTransport actualTransport = transportRepository.findTransportByID(trolleybus.getId()).
-                orElseThrow(NullPointerException::new);
+                orElseThrow(() -> new RuntimeException("Нет транспорта с таким ID"));
 
         // сравниваем объекты
         Assertions.assertEquals(trolleybus, actualTransport);

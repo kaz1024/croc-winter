@@ -1,4 +1,4 @@
-package db;
+package ru.kaz.transport.report.system.db;
 
 import org.apache.derby.jdbc.EmbeddedDataSource;
 

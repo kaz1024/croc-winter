@@ -1,17 +1,18 @@
-package reports;
+package ru.kaz.transport.report.system.reports;
 
-import db.DataSourceProvider;
-import dto.DTOCollection;
-import jaxb.JaxbConverter;
-import model.LocationMark;
-import dto.LocationMarkDTO;
-import model.PublicTransport;
-import repository.LocationRepository;
-import repository.TransportRepository;
+import ru.kaz.transport.report.system.db.DataSourceProvider;
+import ru.kaz.transport.report.system.dto.DTOCollection;
+import ru.kaz.transport.report.system.jaxb.JaxbConverter;
+import ru.kaz.transport.report.system.model.LocationMark;
+import ru.kaz.transport.report.system.dto.LocationMarkDTO;
+import ru.kaz.transport.report.system.model.PublicTransport;
+import ru.kaz.transport.report.system.repository.LocationRepository;
+import ru.kaz.transport.report.system.repository.TransportRepository;
 
 import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
  *
  * Учтена возможность добавления других отчетов.
  */
-public class XMLReportsService {
+public class TransportInRadiusReport {
 
     /**
      * Репозиторий для доступа к таблице с данными о транспорте (PublicTransport).
@@ -53,7 +54,7 @@ public class XMLReportsService {
      *
      * @throws IOException ошибка создания data source provider
      */
-    public XMLReportsService() throws IOException {
+    public TransportInRadiusReport() throws IOException, SQLException {
 
         // получение DataSource
         DataSourceProvider dataSourceProvider;
@@ -85,10 +86,9 @@ public class XMLReportsService {
      *
      * @return true, при успешном создании отчета, false иначе
      */
-    public boolean createTransportInRadiusReport(Integer ox, Integer oy, LocalDateTime localDateTime) {
-
-        // путь до выходного файла
-        String outputFilePath = "src/main/resources/PublicTransportList.xml";
+    public boolean createReport(Integer ox, Integer oy,
+                                LocalDateTime localDateTime,
+                                String outputFilePath) throws SQLException {
 
         // выходной файл
         outputFile = new File(outputFilePath);
@@ -123,7 +123,8 @@ public class XMLReportsService {
      *
      * @return true, если такой транспорт имеется, false иначе
      */
-    private boolean getTransportInRadius(Integer radius, Integer ox, Integer oy, LocalDateTime localDateTime) {
+    private boolean getTransportInRadius(Integer radius, Integer ox, Integer oy, LocalDateTime localDateTime)
+            throws SQLException {
 
         // получаем из базы данных все отметки и фильтруем в соответствии с условием
         // то, что транспорт находится в радиусе проверяем по формуле (x - x0)^2 + (y - y0)^ < radius^2
@@ -142,7 +143,7 @@ public class XMLReportsService {
 
             // если транспорта с таким ID нет, кидаем NullPointerException
             PublicTransport publicTransport = transportRepository.findTransportByID(locationMark.getTransportID()).
-                    orElseThrow(NullPointerException::new);
+                    orElseThrow(() -> new RuntimeException("Нет транспорта с таким ID"));
 
             locationMark.insertPublicTransport(publicTransport);
         }

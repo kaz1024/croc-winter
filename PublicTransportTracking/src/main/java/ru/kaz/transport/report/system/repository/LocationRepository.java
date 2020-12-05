@@ -1,10 +1,9 @@
-package repository;
+package ru.kaz.transport.report.system.repository;
 
-import model.LocationMark;
+import ru.kaz.transport.report.system.model.LocationMark;
 import org.apache.derby.jdbc.EmbeddedDataSource;
 
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +26,7 @@ public class LocationRepository {
     /**
      * Репозиторий для доступа к таблице с данными об отметках местоположения (LocationMark).
      */
-    public LocationRepository(EmbeddedDataSource dataSource) {
+    public LocationRepository(EmbeddedDataSource dataSource) throws SQLException {
         this.dataSource = dataSource;
         this.TABLE_NAME = LocationMark.getTableName();
         initTable();
@@ -41,10 +40,12 @@ public class LocationRepository {
      *
      * @author VKhlybov
      */
-    private void initTable() {
+    private void initTable() throws SQLException {
         System.out.printf("Start initializing %s table...%n", TABLE_NAME);
+
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement()) {
+
             DatabaseMetaData databaseMetadata = connection.getMetaData();
             ResultSet resultSet = databaseMetadata.getTables(
                     null,
@@ -70,6 +71,7 @@ public class LocationRepository {
             }
         } catch (SQLException e) {
             System.out.println("Error occurred during table initializing: " + e.getMessage());
+            throw e;
         } finally {
             System.out.println("======================================");
         }
@@ -80,7 +82,7 @@ public class LocationRepository {
      *
      * @param locationMark отметка местоположения
      */
-    public void createNew(LocationMark locationMark) {
+    public void createNew(LocationMark locationMark) throws SQLException {
 
         // для форматирования LocalDateTime в вид, который может быть записан в БД
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -89,6 +91,7 @@ public class LocationRepository {
 
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sqlQuery)) {
+
             statement.setString(1, locationMark.getTransportID().toString());
             statement.setString(2, locationMark.getLocalDateTime().format(dateTimeFormatter));
             statement.setString(3, locationMark.getOx().toString());
@@ -96,6 +99,7 @@ public class LocationRepository {
             statement.execute();
         } catch (Exception e) {
             System.out.println("Ошибка выполнения запроса createNew locationMark: " + e.getMessage());
+            throw e;
         }
     }
 
@@ -104,9 +108,11 @@ public class LocationRepository {
      *
      * @return список всех меток о местоположении
      */
-    public List<LocationMark> findAll() {
+    public List<LocationMark> findAll() throws SQLException {
+
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement()) {
+
             ResultSet resultSet = statement.executeQuery("SELECT * FROM " + TABLE_NAME);
             List<LocationMark> locationMarks = new ArrayList<>();
             while (resultSet.next()) {
@@ -119,22 +125,24 @@ public class LocationRepository {
             return locationMarks;
         } catch (Exception e) {
             System.out.println("Ошибка выполнения запроса findAll locationMarks: " + e.getMessage());
+            throw e;
         }
-        return new ArrayList<>();
     }
 
     /**
      * Метод удаления всех записей из таблицы.
      */
-    public void deleteAll() {
+    public void deleteAll() throws SQLException {
         String sqlQuery = "DELETE FROM " + TABLE_NAME;
 
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sqlQuery)) {
+
             statement.execute();
 
         } catch (Exception e) {
             System.out.println("Ошибка выполнения запроса deleteAll locationMarks: " + e.getMessage());
+            throw e;
         }
     }
 }
